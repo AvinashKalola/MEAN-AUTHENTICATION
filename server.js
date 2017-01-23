@@ -34,7 +34,7 @@ initPassport(passport);
 // handle the callback after facebook has authenticated the user
 app.use('/login/facebook/callback',
     passport.authenticate('facebook', {
-	successRedirect : '/',
+	successRedirect : '/app',
 	failureRedirect : '/login'
 	})
 );
