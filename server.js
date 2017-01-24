@@ -19,7 +19,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use('/api', expressJwt({ secret: config.secret }).unless({ path: ['/api/users/checkUser','/api/users/register'] }));
+app.use('/api', expressJwt({ secret: config.secret }).unless({ path: ['/api/users/checkUser','/api/users/register','/login/facebook/callback'] }));
 
 
 app.use('/login', require('./controllers/login.controller'));
@@ -35,12 +35,22 @@ var initPassport = require('./passport/init');
 initPassport(passport);
 
 // handle the callback after facebook has authenticated the user
-app.use('/login/facebook/callback',
-    passport.authenticate('facebook', {
-	successRedirect : '/app',
-	failureRedirect : '/'
-	})
-);
+// app.use('/login/facebook/callback',
+//     passport.authenticate('facebook', {
+// 	successRedirect : '/app',
+// 	failureRedirect : '/'
+// 	})
+// );
+
+app.use('/login/facebook/callback', passport.authenticate('facebook', {session: false, failureRedirect : '/'}), function(req, res) {
+ // The token we have created on FacebookStrategy above 
+//var token = req.user.token;
+req.session.token = req.user.token;
+var returnUrl = req.query.returnUrl && decodeURIComponent(req.query.returnUrl) || '/';
+res.redirect(returnUrl);
+ //res.send({ token: token });
+});
+
 
 // route for facebook authentication and login
 app.use('/login/facebook', 
