@@ -27,6 +27,9 @@ app.use('/app', require('./controllers/app.controller'));
 app.use('/api/users', require('./controllers/api/users.controller'));
 app.use('/register', require('./controllers/register.controller'));
 
+app.get('/', function (req, res) {
+    return res.redirect('/app');
+});
 
 var initPassport = require('./passport/init');
 initPassport(passport);
@@ -35,19 +38,13 @@ initPassport(passport);
 app.use('/login/facebook/callback',
     passport.authenticate('facebook', {
 	successRedirect : '/app',
-	failureRedirect : '/login'
+	failureRedirect : '/'
 	})
 );
 
 // route for facebook authentication and login
 app.use('/login/facebook', 
     passport.authenticate('facebook', { scope : 'email' }));
-
-
-app.get('/', function (req, res) {
-    return res.redirect('/app');
-});
-
 
 var server = app.listen(process.env.PORT || 3000, function () {
     console.log('Server listening at http://' + server.address().address + ':' + server.address().port);
