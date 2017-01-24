@@ -29,7 +29,8 @@ function(access_token, refresh_token, profile, done) {
 
 	            if (user) {
 					//deferred.resolve(jwt.sign({ sub: user._id }, config.secret));
-	                return done(null, user); 
+					user.token = jwt.sign({ sub: user._id }, config.secret);
+                    return done(null, user); 
 	            } else {
 	                
 					var user = new User();
@@ -61,6 +62,7 @@ function(access_token, refresh_token, profile, done) {
 								//deferred.reject(err.name + ': ' + err.message);
 							}
 						//deferred.resolve(jwt.sign({ sub: newUser._id }, config.secret));
+						newUser.token = jwt.sign({ sub: newUser._id }, config.secret);
 						return done(null, newUser);
 					});
 	            }
